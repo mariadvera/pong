@@ -24,7 +24,7 @@ source ./env/bin/activate
 '''
 
 
-## gestor de paquetes
+## gestor de paquetes: pip 
 Instalar un paquete nuevo: `pip install <nombre del paquete>` 
 
 activar el entornoantes de instalar

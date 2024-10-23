@@ -1,41 +1,52 @@
 import pygame
 
+ANCHO =800
+ALTO = 600
+ALTO_PALA = 100
+MARGEN = 20
+ANCHO_PALA = 30
+
+COLOR_FONDO = (0,0,0) # RGB (red, green, blue)
+COLOR_OBJETOS = (200,200,200)
+
+
+
 class Pong:
-    
 
-    def __init__(self):
-        pygame.init()
-        self.pantalla = pygame.display.set_mode((800,600))
+  def __init__(self):
+     pygame.init()
+     self.pantalla = pygame.display.set_mode((ANCHO,ALTO))
 
-    def jugar(self):
-        salir =False
-        cont =0
+  def jugar(self):
+    salir = False
 
-        while not salir:    #bucle principal (main loop) 
-            cont = cont +1
-          
-            for evento in pygame.event.get():
-                if evento.type == pygame.QUIT:
-                # print('Se ha cerrado la ventana')
-                  salir = True
-                
-        # print('se ha producido un evento del tipo:', evento)
+    while not salir:
+    # bucle principal(main loop)   
+        for evento in pygame.event.get():
+          if evento.type == pygame.QUIT:
+             salir = True
 
-            # renderizar mis objetos
-            # 1. borrar la pantalla
-            pygame.draw.rect(self.pantalla, (0,0,0), ((0,0), (800,600)) )
+    # renderizar mis objetos
 
-            # 2. pintar los objetos en su nueva posición
+    # 1. borrar la pantalla: pintar un cuadrado con el color de fondo que ocupe todo la pantalla 
+        pygame.draw.rect(self.pantalla, COLOR_FONDO,((0,0),(ANCHO,ALTO)) )
 
-            rectangulo = pygame.Rect(50,50,300,150)
-            pygame.draw.rect(self.pantalla,(cont % 255, 68,158), rectangulo )
+    # 2. pintar jugador 1 (izquierda)
+    # pygame.Rect(izda, arriba, ancho, alto)
+    arriba = (ALTO-ALTO_PALA)/2  # ALTO/2 -ALTO_PALA/2   
+    jugador1 = pygame.Rect(MARGEN, arriba, ANCHO_PALA, ALTO_PALA)
+    pygame.draw.rect(self.pantalla, COLOR_OBJETOS, jugador1) 
 
-            # mostrar los cambios en la pantalla
-            pygame.display.flip()
+    # Pintar jugador 2(derecha)
+
+    izquierda =  ANCHO -MARGEN -ANCHO_PALA
+    jugador2 = pygame.Rect(izquierda, arriba, ANCHO_PALA, ALTO_PALA)
+    pygame.draw.rect(self.pantalla, COLOR_OBJETOS, jugador2) 
+
+    # mostrar los cambios en la pantalla 
+    pygame.display.flip() 
 
 
-        pygame.quit()
+pygame.quit()
 
-if __name__== '__main__':
-    juego =Pong()
-    juego.jugar()
+
