@@ -11,10 +11,12 @@ COLOR_OBJETOS = (255, 255, 255)
 
 class Pong:
 
+
     
     def __init__(self):
       pygame.init()      
       self.pantalla = pygame.display.set_mode((ANCHO ,ALTO))
+      self.pelota = Pelota()
 
 
     def jugar(self):
@@ -27,13 +29,13 @@ class Pong:
                 if evento.type == pygame.QUIT:
                     print('se ha cerrado la ventan')
                     salir = True
-                    cont =0
+                    cont = 0
         
 
             # como renderizar mis objetos
             # pintar los objetos en la nueva posición
-            #1. borrar la pantalla
 
+            #1. borrar la pantalla
             pygame.draw.rect(self.pantalla, COLOR_FONDO, ((0,0), (ANCHO,ALTO,)))
 
             # 2. pintar jugador 1(izquierdo)            
@@ -51,6 +53,10 @@ class Pong:
             # 4. pintar la red
             self.pintar_red()
 
+            # 5 pintar pelota
+            self.pelota.pintame(self.pantalla)
+
+
               
 
 
@@ -62,19 +68,43 @@ class Pong:
     def pintar_red(self):
         pos_x = ANCHO / 2
 
-        tramo_pintado = 40
-        tramo_vacio = 20
+        tramo_pintado = 20
+        tramo_vacio = 15
+        ancho_red = 6
 
         for y in range(0, ALTO, (tramo_pintado + tramo_vacio)):
-            pygame.draw.line(self.pantalla,(COLOR_OBJETOS), (pos_x,y), (pos_x, y + tramo_pintado ), width = 1)  # y es la que estoy iternado en elbucle
-        
+            pygame.draw.line(
+                self.pantalla,
+                (COLOR_OBJETOS),
+                (pos_x,y),
+                (pos_x, y + tramo_pintado ),
+                width =  ancho_red) 
+
+            
+
+
+
+class Pelota:
+    tam_pelota = 10  
+    def __init__(self):
+        # definido (construido, insatanciado..) el rectangulo
+        self.rectangulo = pygame.Rect(
+            (ANCHO-self.tam_pelota )/2,
+            (ALTO -self.tam_pelota)/2,
+            self.tam_pelota,
+            self.tam_pelota
+        )
+
+      
+    def pintame(self, pantalla):
+       #pintar ek rectángulo
+       pygame.draw. rect(pantalla, COLOR_OBJETOS, self.rectangulo)
 
 
 
             
 
       
-
 
 
 
