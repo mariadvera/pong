@@ -12,12 +12,12 @@ VEL_JUGADOR = 5
 
 
 
-class Pintable:
+class Pintable(pygame.Rect):
     def __init__(self, x, y, ancho, alto):
-        self.rectangulo  = pygame.Rect(x, y, ancho, alto)
+       super().__init__(x, y, ancho, alto)
 
     def pintame(self, pantalla):
-        pygame.draw.rect(pantalla,COLOR_OBJETOS,self.rectangulo)           
+        pygame.draw.rect(pantalla,COLOR_OBJETOS, self)           
 
 
 
@@ -37,6 +37,11 @@ class Jugador(Pintable):
         def __init__(self,x):
             arriba = (ALTO-ALTO_PALA)/2
             super().__init__(x, arriba, ANCHO_PALA, ALTO_PALA)
+
+        def subir(self):
+            self.y -= VEL_JUGADOR
+
+        
           
 
 
@@ -49,22 +54,40 @@ class Pong:
       self.pantalla = pygame.display.set_mode((ANCHO ,ALTO))
       self.pelota = Pelota()
       self.jugador1 = Jugador(MARGEN)
-      self.jugador2 = Jugador(ANCHO-MARGEN-ANCHO_PALA)
+      self.jugador2 = Jugador(ANCHO - MARGEN - ANCHO_PALA)
 
 
     def jugar(self):
         salir = False
-        cont = 0
-
+    
         while not salir:  # bucle principal(main loop)
-            cont = cont + 1
+       
             for evento in pygame.event.get():
-                if evento.type == pygame.QUIT or (evento.type == pygame.KEYUP and evento.key == pygame.K_ESCAPE):
-                    print('se ha cerrado la ventan')
+                if evento.type == pygame.QUIT or (evento.type == pygame.KEYUP and evento.key == pygame.K_ESCAPE):                 
                     salir = True
-                    cont = 0
-        
+                
+              #  if evento.type == pygame.KEYDOWN and evento.key == pygame.K_a:                  
+                   # self.jugador1.rectangulo.y = self.jugador1.rectangulo.y - VEL_JUGADOR
+              #  if evento.type == pygame.KEYDOWN and evento.key == pygame.K_z:                  
+                    #self.jugador1.rectangulo.y = self.jugador1.rectangulo.y + VEL_JUGADOR
+              # if evento.type == pygame.KEYDOWN and evento.key == pygame.K_UP:                  
+                   # self.jugador2.rectangulo.y = self.jugador2.rectangulo.y - VEL_JUGADOR
+              #  if evento.type == pygame.KEYDOWN and evento.key == pygame.K_DOWN:                  
+                    #self.jugador2.rectangulo.y = self.jugador2.rectangulo.y + VEL_JUGADOR
 
+            estado_teclas = pygame.key.get_pressed()
+            if estado_teclas[pygame.K_a]: 
+                self.jugador1.subir() 
+
+            if estado_teclas[pygame.K_z]: 
+                self.jugador1.y += VEL_JUGADOR           
+
+            if estado_teclas[pygame.K_UP]: 
+                self.jugador2.subir()
+
+            if estado_teclas[pygame.K_DOWN]: 
+                self.jugador2.y -= VEL_JUGADOR
+            
             # como renderizar mis objetos
             # pintar los objetos en la nueva posición
 
