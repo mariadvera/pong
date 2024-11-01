@@ -47,6 +47,10 @@ class Pong:
             izquierda = ANCHO - MARGEN - ANCHO_PALA
             jugador2 = pygame.Rect(izquierda, arriba, ANCHO_PALA,ALTO_PALA)
             pygame.draw.rect(self.pantalla,(COLOR_OBJETOS),jugador2)
+
+            # 4. pintar la red
+            self.pintar_red()
+
               
 
 
@@ -54,6 +58,19 @@ class Pong:
             pygame.display.flip()
 
         pygame.quit()
+
+    def pintar_red(self):
+        pos_x = ANCHO / 2
+
+        tramo_pintado = 40
+        tramo_vacio = 20
+
+        for y in range(0, ALTO, (tramo_pintado + tramo_vacio)):
+            pygame.draw.line(self.pantalla,(COLOR_OBJETOS), (pos_x,y), (pos_x, y + tramo_pintado ), width = 1)  # y es la que estoy iternado en elbucle
+        
+
+
+
             
 
       
