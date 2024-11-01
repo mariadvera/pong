@@ -4,19 +4,52 @@ ALTO = 600
 ALTO_PALA = 100
 ANCHO = 800
 ANCHO_PALA = 20
-COLOR_FONDO = (0,0,0)  #(red, green,blue)
+COLOR_FONDO = (0,0,0)  
+COLOR_OBJETOS = (200, 200, 200)
 MARGEN = 30
+VEL_JUGADOR = 5
 
-COLOR_OBJETOS = (255, 255, 255)
+
+
+
+class Pintable:
+    def __init__(self, x, y, ancho, alto):
+        self.rectangulo  = pygame.Rect(x, y, ancho, alto)
+
+    def pintame(self, pantalla):
+        pygame.draw.rect(pantalla,COLOR_OBJETOS,self.rectangulo)           
+
+
+
+class Pelota(Pintable):
+    tam_pelota = 10  
+    def __init__(self):
+        # definido (construido, insatanciado..) el rectangulo
+        super().__init__(       
+        (ANCHO-self.tam_pelota )/2,
+        (ALTO -self.tam_pelota)/2,
+        self.tam_pelota,
+        self.tam_pelota
+        )
+
+
+class Jugador(Pintable):
+        def __init__(self,x):
+            arriba = (ALTO-ALTO_PALA)/2
+            super().__init__(x, arriba, ANCHO_PALA, ALTO_PALA)
+          
+
+
+
 
 class Pong:
-
-
     
     def __init__(self):
       pygame.init()      
       self.pantalla = pygame.display.set_mode((ANCHO ,ALTO))
       self.pelota = Pelota()
+      self.jugador1 = Jugador(MARGEN)
+      self.jugador2 = Jugador(ANCHO-MARGEN-ANCHO_PALA)
 
 
     def jugar(self):
@@ -26,7 +59,7 @@ class Pong:
         while not salir:  # bucle principal(main loop)
             cont = cont + 1
             for evento in pygame.event.get():
-                if evento.type == pygame.QUIT:
+                if evento.type == pygame.QUIT or (evento.type == pygame.KEYUP and evento.key == pygame.K_ESCAPE):
                     print('se ha cerrado la ventan')
                     salir = True
                     cont = 0
@@ -40,15 +73,11 @@ class Pong:
 
             # 2. pintar jugador 1(izquierdo)            
             # pygame.Rect(izq,arriba,ancho,alto)
-            arriba = (ALTO-ALTO_PALA)/2 # ALTO/2 -ALTO_PALA)
-            jugador1 = pygame.Rect(MARGEN, arriba, ANCHO_PALA,ALTO_PALA)
-            pygame.draw.rect(self.pantalla,(COLOR_OBJETOS),jugador1)
+            self.jugador1.pintame(self.pantalla)
+           
 
              # 3. pintar jugador 2(derecho)
-            arriba = (ALTO-ALTO_PALA)/2
-            izquierda = ANCHO - MARGEN - ANCHO_PALA
-            jugador2 = pygame.Rect(izquierda, arriba, ANCHO_PALA,ALTO_PALA)
-            pygame.draw.rect(self.pantalla,(COLOR_OBJETOS),jugador2)
+            self.jugador2.pintame(self.pantalla)
 
             # 4. pintar la red
             self.pintar_red()
@@ -80,25 +109,8 @@ class Pong:
                 (pos_x, y + tramo_pintado ),
                 width =  ancho_red) 
 
-            
-
-
-
-class Pelota:
-    tam_pelota = 10  
-    def __init__(self):
-        # definido (construido, insatanciado..) el rectangulo
-        self.rectangulo = pygame.Rect(
-            (ANCHO-self.tam_pelota )/2,
-            (ALTO -self.tam_pelota)/2,
-            self.tam_pelota,
-            self.tam_pelota
-        )
-
       
-    def pintame(self, pantalla):
-       #pintar ek rectángulo
-       pygame.draw. rect(pantalla, COLOR_OBJETOS, self.rectangulo)
+   
 
 
 
