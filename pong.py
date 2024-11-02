@@ -36,8 +36,28 @@ class Pelota(Pintable):
           (ALTO -self.tam_pelota)/2,
           self.tam_pelota,
           self.tam_pelota)
-        self.vel_x = randint( -VEL_PELOTA, VEL_PELOTA)
+        
+        self.vel_x = 0
+        while self.vel_x == 0:
+            self.vel_x = randint( -VEL_PELOTA, VEL_PELOTA)
         self.vel_y = randint( -VEL_PELOTA, VEL_PELOTA)
+
+
+    def mover(self):
+        self.x += self.vel_x
+        self.y += self.vel_y
+
+
+        if self.y <= 0:
+            self.vel_y = -self.vel_y
+        if self.y >= (ALTO - self.tam_pelota):
+            self.vel_y = -self.vel_y
+
+        if self.x <= 0:
+            self.vel_x = -self.vel_x
+        if self.x >= (ANCHO - self.tam_pelota):
+            self.vel_x = -self.vel_x    
+
         
 
 
@@ -122,19 +142,17 @@ class Pong:
             # 4. pintar la red
             self.pintar_red()
 
-            # 5 calculamos la posición: x,y. luego pintamos la  pelota
+            # 5 calculamos la posición y pintamos la pelota x,y
             # posición inicial es el centro de la pantalla
-            # la pelota sale disparada en alguna dirección aleatoria
+            # iniciar el movimiento en una posicion  aleatoria
 
-            self.pelota.x += self.pelota.vel_x
-            self.pelota.y += self.pelota.vel_y
-
+            self.pelota.mover()
             self.pelota.pintame(self.pantalla)
 
             for p in pelotas:
-                p.x += p.vel_x
-                p.y += p.vel_y
-                p.pintame(self.pantalla)
+               p.mover()
+               p.pintame(self.pantalla)
+         
 
 
             # mostrar los cambios en la pantalla
