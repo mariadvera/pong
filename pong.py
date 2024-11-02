@@ -39,7 +39,17 @@ class Jugador(Pintable):
             super().__init__(x, arriba, ANCHO_PALA, ALTO_PALA)
 
         def subir(self):
+            posicion_minima = 0
             self.y -= VEL_JUGADOR
+            if self.y <posicion_minima:                
+                self.y = posicion_minima
+
+        def bajar(self):
+            posicion_maxima = ALTO - ALTO_PALA
+            self.y += VEL_JUGADOR
+            if self.y >posicion_maxima:
+                self.y = posicion_maxima
+
 
         
           
@@ -80,13 +90,13 @@ class Pong:
                 self.jugador1.subir() 
 
             if estado_teclas[pygame.K_z]: 
-                self.jugador1.y += VEL_JUGADOR           
+                self.jugador1.bajar()          
 
             if estado_teclas[pygame.K_UP]: 
                 self.jugador2.subir()
 
             if estado_teclas[pygame.K_DOWN]: 
-                self.jugador2.y -= VEL_JUGADOR
+                self.jugador2.bajar()
             
             # como renderizar mis objetos
             # pintar los objetos en la nueva posición
