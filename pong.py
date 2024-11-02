@@ -53,10 +53,7 @@ class Pelota(Pintable):
         if self.y >= (ALTO - self.tam_pelota):
             self.vel_y = -self.vel_y
 
-        if self.x <= 0:
-            self.vel_x = -self.vel_x
-        if self.x >= (ANCHO - self.tam_pelota):
-            self.vel_x = -self.vel_x    
+       
 
         
 
@@ -126,7 +123,8 @@ class Pong:
             # pintar los objetos en la nueva posición
 
             #1. borrar la pantalla
-            pygame.draw.rect(self.pantalla, COLOR_FONDO, ((0,0), (ANCHO,ALTO,)))
+          #  pygame.draw.rect(self.pantalla, COLOR_FONDO, ((0,0), (ANCHO,ALTO,)))
+            self.pantalla.fill(COLOR_FONDO)
 
             # 2. pintar jugador 1(izquierdo)            
             # pygame.Rect(izq,arriba,ancho,alto)
@@ -144,7 +142,13 @@ class Pong:
             # iniciar el movimiento en una posicion  aleatoria
 
             self.pelota.mover()
-            self.pelota.pintame(self.pantalla)       
+            self.pelota.pintame(self.pantalla)  
+
+            # comprobar colision pelota con rjugadores
+            if self.pelota.colliderect(self.jugador1) or self.pelota.colliderect(self.jugador2):
+                print("la pelota rebota")
+            
+                self.pelota.vel_x = -self.pelota.vel_x      
          
 
 
