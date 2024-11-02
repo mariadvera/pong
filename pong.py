@@ -6,8 +6,10 @@ ANCHO = 800
 ANCHO_PALA = 20
 COLOR_FONDO = (0,0,0)  
 COLOR_OBJETOS = (200, 200, 200)
+FPS = 30
 MARGEN = 30
-VEL_JUGADOR = 5
+VEL_JUGADOR = 10
+
 
 
 
@@ -48,13 +50,7 @@ class Jugador(Pintable):
             posicion_maxima = ALTO - ALTO_PALA
             self.y += VEL_JUGADOR
             if self.y >posicion_maxima:
-                self.y = posicion_maxima
-
-
-        
-          
-
-
+                self.y = posicion_maxima 
 
 
 class Pong:
@@ -62,6 +58,7 @@ class Pong:
     def __init__(self):
       pygame.init()      
       self.pantalla = pygame.display.set_mode((ANCHO ,ALTO))
+      self.reloj = pygame.time.Clock()
       self.pelota = Pelota()
       self.jugador1 = Jugador(MARGEN)
       self.jugador2 = Jugador(ANCHO - MARGEN - ANCHO_PALA)
@@ -124,6 +121,7 @@ class Pong:
 
             # mostrar los cambios en la pantalla
             pygame.display.flip()
+            self.reloj.tick(FPS)
 
         pygame.quit()
 
