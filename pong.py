@@ -1,14 +1,17 @@
+from random import randint
 import pygame
 
 ALTO = 600
 ALTO_PALA = 100
 ANCHO = 800
 ANCHO_PALA = 20
-COLOR_FONDO = (0,0,0)  
+COLOR_FONDO = (0,0,0)    
 COLOR_OBJETOS = (200, 200, 200)
 FPS = 30
 MARGEN = 30
 VEL_JUGADOR = 10
+VEL_PELOTA = 10
+
 
 
 
@@ -24,15 +27,18 @@ class Pintable(pygame.Rect):
 
 
 class Pelota(Pintable):
-    tam_pelota = 10  
+    tam_pelota = 10 
+    
     def __init__(self):
         # definido (construido, insatanciado..) el rectangulo
         super().__init__(       
-        (ANCHO-self.tam_pelota )/2,
-        (ALTO -self.tam_pelota)/2,
-        self.tam_pelota,
-        self.tam_pelota
-        )
+          (ANCHO-self.tam_pelota )/2,
+          (ALTO -self.tam_pelota)/2,
+          self.tam_pelota,
+          self.tam_pelota)
+        self.vel_x = randint( -VEL_PELOTA, VEL_PELOTA)
+        self.vel_y = randint( -VEL_PELOTA, VEL_PELOTA)
+        
 
 
 class Jugador(Pintable):
@@ -66,6 +72,10 @@ class Pong:
 
     def jugar(self):
         salir = False
+
+        pelotas = []
+        for p in range(0,25):
+            pelotas.append(Pelota())
     
         while not salir:  # bucle principal(main loop)
        
@@ -112,11 +122,19 @@ class Pong:
             # 4. pintar la red
             self.pintar_red()
 
-            # 5 pintar pelota
+            # 5 calculamos la posición: x,y. luego pintamos la  pelota
+            # posición inicial es el centro de la pantalla
+            # la pelota sale disparada en alguna dirección aleatoria
+
+            self.pelota.x += self.pelota.vel_x
+            self.pelota.y += self.pelota.vel_y
+
             self.pelota.pintame(self.pantalla)
 
-
-              
+            for p in pelotas:
+                p.x += p.vel_x
+                p.y += p.vel_y
+                p.pintame(self.pantalla)
 
 
             # mostrar los cambios en la pantalla
