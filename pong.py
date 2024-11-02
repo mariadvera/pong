@@ -92,10 +92,7 @@ class Pong:
 
     def jugar(self):
         salir = False
-
-        pelotas = []
-        for p in range(0,25):
-            pelotas.append(Pelota())
+       
     
         while not salir:  # bucle principal(main loop)
        
@@ -147,11 +144,7 @@ class Pong:
             # iniciar el movimiento en una posicion  aleatoria
 
             self.pelota.mover()
-            self.pelota.pintame(self.pantalla)
-
-            for p in pelotas:
-               p.mover()
-               p.pintame(self.pantalla)
+            self.pelota.pintame(self.pantalla)       
          
 
 
