@@ -14,12 +14,6 @@ VEL_JUGADOR = 10
 VEL_PELOTA = 10
 PUNTOS_GANAR = 9
 
-
-
-
-
-
-
 class Pintable(pygame.Rect):
     def __init__(self, x, y, ancho, alto):
        super().__init__(x, y, ancho, alto)
@@ -112,7 +106,8 @@ class Marcador :
     def reset (self):
         self.puntuacion = [0,0]
 
-    def pintame(self,pantalla):     
+    def pintame(self,pantalla): 
+           
       # puntuacion = str(self.puntuacion[0])
       # img_texto = self.tipo_letra.render(puntuacion, False, COLOR_OBJETOS )
       # ancho_img = img_texto.get_width()
@@ -171,6 +166,8 @@ class Pong:
       self.jugador1 = Jugador(MARGEN)
       self.jugador2 = Jugador(ANCHO - MARGEN - ANCHO_PALA)
       self.marcador = Marcador()
+      self.juego_terminado = False
+      self.ganador = 0
      
      
 
@@ -192,59 +189,69 @@ class Pong:
                    # self.jugador2.rectangulo.y = self.jugador2.rectangulo.y - VEL_JUGADOR
               #  if evento.type == pygame.KEYDOWN and evento.key == pygame.K_DOWN:                  
                     #self.jugador2.rectangulo.y = self.jugador2.rectangulo.y + VEL_JUGADOR
+
+                if self.juego_terminado:
+                    if evento.type == pygame.KEYDOWN:
+                        if evento.key == pygame.K_s:
+                            self.reiniciar()
+                        elif evento.key == pygame.K_n:
+                             salir = True
+                             pygame.display.flip()
+
+            if not self.juego_terminado:                            
+                estado_teclas = pygame.key.get_pressed()
+                if estado_teclas[pygame.K_a]: 
+                    self.jugador1.subir() 
+
+                if estado_teclas[pygame.K_z]: 
+                    self.jugador1.bajar()          
+
+                if estado_teclas[pygame.K_UP]: 
+                    self.jugador2.subir()
+
+                if estado_teclas[pygame.K_DOWN]: 
+                    self.jugador2.bajar()
                 
-              
-                           
-            estado_teclas = pygame.key.get_pressed()
-            if estado_teclas[pygame.K_a]: 
-                self.jugador1.subir() 
+                # como renderizar mis objetos
+                # pintar los objetos en la nueva posición
 
-            if estado_teclas[pygame.K_z]: 
-                self.jugador1.bajar()          
+                #1. borrar la pantalla
+            #  pygame.draw.rect(self.pantalla, COLOR_FONDO, ((0,0), (ANCHO,ALTO,)))
+                self.pantalla.fill(COLOR_FONDO)
 
-            if estado_teclas[pygame.K_UP]: 
-                self.jugador2.subir()
-
-            if estado_teclas[pygame.K_DOWN]: 
-                self.jugador2.bajar()
+                # 2. pintar jugador 1(izquierdo)            
+                # pygame.Rect(izq,arriba,ancho,alto)
+                self.jugador1.pintame(self.pantalla)
             
-            # como renderizar mis objetos
-            # pintar los objetos en la nueva posición
 
-            #1. borrar la pantalla
-          #  pygame.draw.rect(self.pantalla, COLOR_FONDO, ((0,0), (ANCHO,ALTO,)))
-            self.pantalla.fill(COLOR_FONDO)
+                # 3. pintar jugador 2(derecho)
+                self.jugador2.pintame(self.pantalla)
 
-            # 2. pintar jugador 1(izquierdo)            
-            # pygame.Rect(izq,arriba,ancho,alto)
-            self.jugador1.pintame(self.pantalla)
-           
+                # 4. pintar la red
+                self.pintar_red()
 
-             # 3. pintar jugador 2(derecho)
-            self.jugador2.pintame(self.pantalla)
+                # 5 calculamos la posición y pintamos la pelota x,y
+                # posición inicial es el centro de la pantalla
+                # iniciar el movimiento en una posicion  aleatoria
 
-            # 4. pintar la red
-            self.pintar_red()
+                punto_para = self.pelota.mover()
+                self.pelota.pintame(self.pantalla)  
 
-            # 5 calculamos la posición y pintamos la pelota x,y
-            # posición inicial es el centro de la pantalla
-            # iniciar el movimiento en una posicion  aleatoria
+                # comprobar colision pelota con rjugadores
+                if self.pelota.colliderect(self.jugador1) or self.pelota.colliderect(self.jugador2):
+                    self.pelota.vel_x = -self.pelota.vel_x  
 
-            punto_para = self.pelota.mover()
-            self.pelota.pintame(self.pantalla)  
-
-            # comprobar colision pelota con rjugadores
-            if self.pelota.colliderect(self.jugador1) or self.pelota.colliderect(self.jugador2):
-                self.pelota.vel_x = -self.pelota.vel_x  
-
-            if punto_para in(1,2):
-              self.marcador.incrementar(punto_para)
-              ganador = self.marcador.quien_gana()
-              if ganador> 0:
-                  print(f'Elganador {ganador} ha ganado la partida.')
-                  self.pelota.vel_x = self.pelota.vel_y = 0
-
-            self.marcador.pintame(self.pantalla)
+                if punto_para in(1,2):
+                    self.marcador.incrementar(punto_para)
+                    ganador = self.marcador.quien_gana()
+                    if ganador> 0:
+                      # print(f'Elganador {ganador} ha ganado la partida.')
+                      # self.pelota.vel_x = self.pelota.vel_y = 0
+                       self.ganador = ganador
+                       self.juego_terminado = True
+                       self.mostrar_mensaje_fin()
+                       
+                self.marcador.pintame(self.pantalla)
             # mostrar los cambios en la pantalla
             pygame.display.flip()
             self.reloj.tick(FPS)
@@ -253,18 +260,40 @@ class Pong:
 
     def pintar_red(self):
         pos_x = ANCHO / 2
-
         tramo_pintado = 20
         tramo_vacio = 15
-        ancho_red = 6
-
+        ancho_red = 6        
         for y in range(0, ALTO, (tramo_pintado + tramo_vacio)):
             pygame.draw.line(
                 self.pantalla,
                 (COLOR_OBJETOS),
                 (pos_x,y),
                 (pos_x, y + tramo_pintado ),
-                width =  ancho_red) 
+                width =  ancho_red)
+             
+    def mostrar_mensaje_fin(self):
+        fuente_mensaje = pygame.font.SysFont('ubuntu', 50)
+        mensaje1 = f"El jugador {self.ganador} ha ganado la partida"
+        mensaje2 = "¿Empezar una nueva partida? (S/N)"
+
+        texto1 = fuente_mensaje.render(mensaje1, True, COLOR_OBJETOS)
+        texto2 = fuente_mensaje.render(mensaje2, True, COLOR_OBJETOS)
+
+        rect_texto1 = texto1.get_rect(center=(ANCHO // 2, ALTO // 2 - 15))
+        rect_texto2 = texto2.get_rect(center=(ANCHO // 2, ALTO // 2 + 30))
+
+        self.pantalla.blit(texto1, rect_texto1)
+        self.pantalla.blit(texto2, rect_texto2)
+        pygame.display.flip() 
+
+
+
+    def reiniciar(self):
+        self.juego_terminado = False
+        self.marcador.reset()
+        self.pelota.reiniciar(haciaIzquierda=self.ganador == 1)    
+            
+    
 
       
    
