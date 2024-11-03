@@ -9,8 +9,11 @@ COLOR_FONDO = (0,0,0)
 COLOR_OBJETOS = (200, 200, 200)
 FPS = 60
 MARGEN = 30
+TAM_LETRA_MARCADOR = 150
 VEL_JUGADOR = 10
 VEL_PELOTA = 10
+PUNTOS_GANAR = 9
+
 
 
 
@@ -93,23 +96,57 @@ class Jugador(Pintable):
                 self.y = posicion_maxima 
 
 class Marcador :
+   
     def  __init__(self):
+        self.preparar_tipografia()
         self.reset() 
+
+    def preparar_tipografia(self):
+        tipos = pygame.font.get_fonts()
+        letra = 'ubuntu'
+        if letra not in tipos:
+            letra = pygame.font.get_default_font()
+        self.tipo_letra = pygame.font.SysFont(letra, TAM_LETRA_MARCADOR, True)
+
 
     def reset (self):
         self.puntuacion = [0,0]
 
-    def pintame(self):
-        print('Marcador: ',  self.puntuacion )
+    def pintame(self,pantalla):     
+      # puntuacion = str(self.puntuacion[0])
+      # img_texto = self.tipo_letra.render(puntuacion, False, COLOR_OBJETOS )
+      # ancho_img = img_texto.get_width()
+      # x = (ANCHO/2 - ancho_img) /2
+      # y = MARGEN
+      #pantalla.blit(img_texto, (x,y))
 
+      # puntuacion = str(self.puntuacion[1])
+      # img_texto = self.tipo_letra.render(puntuacion, True, COLOR_OBJETOS )
+      # ancho_img = img_texto.get_width()
+      # x += ANCHO/2 
+      # y = MARGEN
+      # pantalla.blit(img_texto, (x,y))
+
+       cuarto = 1
+       for punto in self.puntuacion:
+           puntuacion = str(punto)
+           img_texto = self.tipo_letra.render(puntuacion, True, COLOR_OBJETOS )
+           ancho_img = img_texto.get_width()
+           x = cuarto/4 * ANCHO - ancho_img/2           
+           y = MARGEN
+           pantalla.blit(img_texto, (x,y))
+           cuarto += 2
+           
+
+ 
     def incrementar(self, jugador):
         if jugador in (1,2):
             self.puntuacion[jugador - 1] += 1
 
     def quien_gana(self):
-        if self.puntuacion[0] == 9:
+        if self.puntuacion[0] == PUNTOS_GANAR:
             return 1
-        if self.puntuacion[1] == 9:
+        if self.puntuacion[1] == PUNTOS_GANAR:
             return 2
         return 0
       
@@ -119,7 +156,15 @@ class Marcador :
 class Pong:
     
     def __init__(self):
-      pygame.init()      
+      pygame.init() 
+
+      tipos = pygame.font.get_fonts()
+     # if 'arial' not in tipos:
+      #    raise Exception(' La tipografía no esta disponible')
+      #for tipo in tipos:
+      #    print(tipo)
+      print(pygame.font.get_default_font())
+            
       self.pantalla = pygame.display.set_mode((ANCHO ,ALTO))
       self.reloj = pygame.time.Clock()
       self.pelota = Pelota()
@@ -127,13 +172,12 @@ class Pong:
       self.jugador2 = Jugador(ANCHO - MARGEN - ANCHO_PALA)
       self.marcador = Marcador()
      
+     
 
 
     def jugar(self):
         salir = False
-       
-       
-    
+
         while not salir:  # bucle principal(main loop)
        
             for evento in pygame.event.get():
@@ -148,7 +192,9 @@ class Pong:
                    # self.jugador2.rectangulo.y = self.jugador2.rectangulo.y - VEL_JUGADOR
               #  if evento.type == pygame.KEYDOWN and evento.key == pygame.K_DOWN:                  
                     #self.jugador2.rectangulo.y = self.jugador2.rectangulo.y + VEL_JUGADOR
-
+                
+              
+                           
             estado_teclas = pygame.key.get_pressed()
             if estado_teclas[pygame.K_a]: 
                 self.jugador1.subir() 
@@ -197,8 +243,8 @@ class Pong:
               if ganador> 0:
                   print(f'Elganador {ganador} ha ganado la partida.')
                   self.pelota.vel_x = self.pelota.vel_y = 0
-                  
-            self.marcador.pintame()
+
+            self.marcador.pintame(self.pantalla)
             # mostrar los cambios en la pantalla
             pygame.display.flip()
             self.reloj.tick(FPS)
