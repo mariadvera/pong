@@ -7,7 +7,7 @@ ANCHO = 800
 ANCHO_PALA = 20
 COLOR_FONDO = (0,0,0)    
 COLOR_OBJETOS = (200, 200, 200)
-FPS = 30
+FPS = 60
 MARGEN = 30
 VEL_JUGADOR = 10
 VEL_PELOTA = 10
@@ -55,12 +55,13 @@ class Pelota(Pintable):
 
         if self.x <= 0: 
            self.reiniciar(True)
+           return 2
         if self.x >= (ANCHO - self.tam_pelota):
            self.reiniciar(False) 
-            
-    
+           return 1 
+        return 0    
 
-    def reiniciaar(self, haciaIzquierda): 
+    def reiniciar(self, haciaIzquierda): 
         self.x = (ANCHO - self.tam_pelota )/2
         self.y = (ALTO  - self.tam_pelota)/2
         self.vel_y = randint( -VEL_PELOTA, VEL_PELOTA)
@@ -93,13 +94,13 @@ class Jugador(Pintable):
 
 class Marcador :
     def  __init__(self):
-        self.puntuacion = []
+        self.reset() 
 
     def reset (self):
         self.puntuacion = [0,0]
 
     def pintame(self):
-        print('Marcador: ', self.puntuación)
+        print('Marcador: ',  self.puntuacion )
 
     def incrementar(self, jugador):
         if jugador in (1,2):
@@ -124,10 +125,13 @@ class Pong:
       self.pelota = Pelota()
       self.jugador1 = Jugador(MARGEN)
       self.jugador2 = Jugador(ANCHO - MARGEN - ANCHO_PALA)
+      self.marcador = Marcador()
+     
 
 
     def jugar(self):
         salir = False
+       
        
     
         while not salir:  # bucle principal(main loop)
@@ -180,15 +184,16 @@ class Pong:
             # posición inicial es el centro de la pantalla
             # iniciar el movimiento en una posicion  aleatoria
 
-            self.pelota.mover()
+            punto_para = self.pelota.mover()
             self.pelota.pintame(self.pantalla)  
 
             # comprobar colision pelota con rjugadores
             if self.pelota.colliderect(self.jugador1) or self.pelota.colliderect(self.jugador2):
-                self.pelota.vel_x = -self.pelota.vel_x      
-         
-
-
+                self.pelota.vel_x = -self.pelota.vel_x  
+                    
+            if punto_para in(1,2):
+              self.marcador.incrementar(punto_para)
+            self.marcador.pintame()
             # mostrar los cambios en la pantalla
             pygame.display.flip()
             self.reloj.tick(FPS)
