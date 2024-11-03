@@ -190,9 +190,14 @@ class Pong:
             # comprobar colision pelota con rjugadores
             if self.pelota.colliderect(self.jugador1) or self.pelota.colliderect(self.jugador2):
                 self.pelota.vel_x = -self.pelota.vel_x  
-                    
+
             if punto_para in(1,2):
               self.marcador.incrementar(punto_para)
+              ganador = self.marcador.quien_gana()
+              if ganador> 0:
+                  print(f'Elganador {ganador} ha ganado la partida.')
+                  self.pelota.vel_x = self.pelota.vel_y = 0
+                  
             self.marcador.pintame()
             # mostrar los cambios en la pantalla
             pygame.display.flip()
