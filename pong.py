@@ -32,28 +32,44 @@ class Pelota(Pintable):
     def __init__(self):
         # definido (construido, insatanciado..) el rectangulo
         super().__init__(       
-          (ANCHO-self.tam_pelota )/2,
-          (ALTO -self.tam_pelota)/2,
-          self.tam_pelota,
-          self.tam_pelota)
+            (ANCHO-self.tam_pelota )/2,
+            (ALTO -self.tam_pelota)/2,
+            self.tam_pelota,
+            self.tam_pelota)
         
+        self.vel_y = randint( -VEL_PELOTA, VEL_PELOTA)        
         self.vel_x = 0
         while self.vel_x == 0:
             self.vel_x = randint( -VEL_PELOTA, VEL_PELOTA)
-        self.vel_y = randint( -VEL_PELOTA, VEL_PELOTA)
+      
 
 
     def mover(self):
         self.x += self.vel_x
         self.y += self.vel_y
 
-
         if self.y <= 0:
-            self.vel_y = -self.vel_y
-        if self.y >= (ALTO - self.tam_pelota):
-            self.vel_y = -self.vel_y
+           self.vel_y = -self.vel_y
+        if self.y >= (ALTO -self.tam_pelota):
+           self.vel_y = -self.vel_y
 
-       
+        if self.x <= 0: 
+           self.reiniciar(True)
+        if self.x >= (ANCHO - self.tam_pelota):
+           self.reiniciar(False) 
+            
+    
+
+    def reiniciaar(self, haciaIzquierda): 
+        self.x = (ANCHO - self.tam_pelota )/2
+        self.y = (ALTO  - self.tam_pelota)/2
+        self.vel_y = randint( -VEL_PELOTA, VEL_PELOTA)
+        if haciaIzquierda: 
+            self.vel_x = randint( -VEL_PELOTA, -1) 
+        else:
+            self.vel_x = randint(1, VEL_PELOTA)      
+
+             
 
         
 
@@ -75,6 +91,29 @@ class Jugador(Pintable):
             if self.y >posicion_maxima:
                 self.y = posicion_maxima 
 
+class Marcador :
+    def  __init__(self):
+        self.puntuacion = []
+
+    def reset (self):
+        self.puntuacion = [0,0]
+
+    def pintame(self):
+        print('Marcador: ', self.puntuación)
+
+    def incrementar(self, jugador):
+        if jugador in (1,2):
+            self.puntuacion[jugador - 1] += 1
+
+    def quien_gana(self):
+        if self.puntuacion[0] == 9:
+            return 1
+        if self.puntuacion[1] == 9:
+            return 2
+        return 0
+      
+
+    
 
 class Pong:
     
@@ -146,8 +185,6 @@ class Pong:
 
             # comprobar colision pelota con rjugadores
             if self.pelota.colliderect(self.jugador1) or self.pelota.colliderect(self.jugador2):
-                print("la pelota rebota")
-            
                 self.pelota.vel_x = -self.pelota.vel_x      
          
 
